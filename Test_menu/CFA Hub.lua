@@ -131,7 +131,7 @@ end
 local GuiName = "CFAHubPremium2022"
 
 function CFAHub:CreateWindow(title, gameName, intro)
-    title = title or "<font color=\"#f51cb2\">CFA Hub Premium</font>"
+    title = title or "<font color=\"#1CB2F5\">CFA Hub Premium</font>"
     gameName = gameName or "N/A"
 
     for _, v in pairs(CoreGui:GetChildren()) do
@@ -1079,121 +1079,121 @@ function CFAHub:CreateWindow(title, gameName, intro)
                 local DropItemHolder = Instance.new("ScrollingFrame")
                 local DropItemListLayout = Instance.new("UIListLayout")
                 
-Dropdown.Name = "Dropdown"
-Dropdown.Parent = SectionFrame
-Dropdown.BackgroundColor3 = Color3.fromRGB(75, 0, 130) -- Purple background
-Objects[Dropdown] = "Drop"
-Dropdown.ClipsDescendants = true
-Dropdown.Position = UDim2.new(0.0319148935, 0, 0.186978295, 0)
-Dropdown.Size = UDim2.new(0, 440, 0, 34)
-Dropdown.ZIndex = 2
+                Dropdown.Name = "Dropdown"
+                Dropdown.Parent = SectionFrame
+                Dropdown.BackgroundColor3 = themes.Drop
+                Objects[Dropdown] = "Drop"
+                Dropdown.ClipsDescendants = true
+                Dropdown.Position = UDim2.new(0.0319148935, 0, 0.186978295, 0)
+                Dropdown.Size = UDim2.new(0, 440, 0, 34) -- 146
+                Dropdown.ZIndex = 2
+                
+                DropdownCorner.CornerRadius = UDim.new(0, 4)
+                DropdownCorner.Name = "DropdownCorner"
+                DropdownCorner.Parent = Dropdown
+                
+                DropdownListLayout.Name = "DropdownListLayout"
+                DropdownListLayout.Parent = Dropdown
+                DropdownListLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+                DropdownListLayout.SortOrder = Enum.SortOrder.LayoutOrder
+                DropdownListLayout.Padding = UDim.new(0, 5)
+                
+                TopFrame.Name = "TopFrame"
+                TopFrame.Parent = Dropdown
+                TopFrame.BackgroundColor3 = themes.Background
+                Objects[TopFrame] = "Background"
+                TopFrame.Size = UDim2.new(0, 440, 0, 34)
+                TopFrame.ZIndex = 2
+                
+                ArrowIcon.Name = "ArrowIcon"
+                ArrowIcon.Parent = TopFrame
+                ArrowIcon.AnchorPoint = Vector2.new(0.5, 0.5)
+                ArrowIcon.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+                ArrowIcon.BackgroundTransparency = 1.000
+                ArrowIcon.Position = UDim2.new(0.949999988, 0, 0.5, 0)
+                ArrowIcon.Size = UDim2.new(0, 23, 0, 23)
+                ArrowIcon.ZIndex = 2
+                ArrowIcon.Image = "rbxassetid://7072706663"
+                ArrowIcon.ImageColor3 = themes.TextColor
+                Objects[ArrowIcon] = "TextColor"
+                
+                TopFrameCorner.CornerRadius = UDim.new(0, 4)
+                TopFrameCorner.Name = "TopFrameCorner"
+                TopFrameCorner.Parent = TopFrame
+                
+                if search == true then
+                    DropSearch.Name = "DropSearch"
+                    DropSearch.Parent = TopFrame
+                    DropSearch.AnchorPoint = Vector2.new(1, 0)
+                    DropSearch.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+                    DropSearch.BackgroundTransparency = 1.000
+                    DropSearch.Position = UDim2.new(0.899999976, 0, 0, 0)
+                    DropSearch.Size = UDim2.new(0, 389, 0, 34)
+                    DropSearch.ZIndex = 2
+                    DropSearch.Font = Enum.Font.SourceSansSemibold
+                    DropSearch.Text = droptitle .. ":"
+                    DropSearch.TextColor3 = themes.TextColor
+                    Objects[DropSearch] = "TextColor"
+                    DropSearch.TextSize = 22.000
+                    DropSearch.TextXAlignment = Enum.TextXAlignment.Left
+                else
+                    TextLabel.Parent = TopFrame
+                    TextLabel.AnchorPoint = Vector2.new(1, 0)
+                    TextLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+                    TextLabel.BackgroundTransparency = 1.000
+                    TextLabel.Position = UDim2.new(0.899999976, 0, 0, 0)
+                    TextLabel.Size = UDim2.new(0, 389, 0, 34)
+                    TextLabel.Font = Enum.Font.SourceSansSemibold
+                    TextLabel.Text = droptitle .. ":"
+                    TextLabel.TextColor3 = themes.TextColor
+                    Objects[TextLabel] = "TextColor"
+                    TextLabel.TextSize = 22.000
+                    TextLabel.TextXAlignment = Enum.TextXAlignment.Left
+                    
+                    DropButton.Name = "DropButton"
+                    DropButton.Parent = TopFrame
+                    DropButton.Active = false
+                    DropButton.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+                    DropButton.BackgroundTransparency = 1.000
+                    DropButton.Size = UDim2.new(1, 0, 0, 34)
+                    DropButton.ZIndex = 2
+                    DropButton.AutoButtonColor = false
+                    DropButton.Font = Enum.Font.SourceSansSemibold
+                    DropButton.Text = ""
+                    DropButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+                    DropButton.TextSize = 22.000
+                    DropButton.TextWrapped = true
+                    DropButton.TextXAlignment = Enum.TextXAlignment.Left
+                end
 
-DropdownCorner.CornerRadius = UDim.new(0, 4)
-DropdownCorner.Name = "DropdownCorner"
-DropdownCorner.Parent = Dropdown
+                DropItemHolder.Name = "DropItemHolder"
+                DropItemHolder.Parent = Dropdown
+                DropItemHolder.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+                DropItemHolder.BackgroundTransparency = 1.000
+                DropItemHolder.BorderSizePixel = 0
+                DropItemHolder.Position = UDim2.new(0, 0, 0.254901975, 0)
+                DropItemHolder.Size = UDim2.new(1, 0, 0.0130718956, 100)
+                DropItemHolder.CanvasSize = UDim2.new(0, 0, 0, 0)
+                DropItemHolder.ScrollBarThickness = 6
+                DropItemHolder.ScrollBarImageColor3 = themes.ScrollBar
+                Objects[DropItemHolder] = "ScrollBar"
+                
+                DropItemListLayout.Name = "DropItemListLayout"
+                DropItemListLayout.Parent = DropItemHolder
+                DropItemListLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+                DropItemListLayout.SortOrder = Enum.SortOrder.LayoutOrder
+                DropItemListLayout.Padding = UDim.new(0, 5)
 
-DropdownListLayout.Name = "DropdownListLayout"
-DropdownListLayout.Parent = Dropdown
-DropdownListLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
-DropdownListLayout.SortOrder = Enum.SortOrder.LayoutOrder
-DropdownListLayout.Padding = UDim.new(0, 5)
-
-TopFrame.Name = "TopFrame"
-TopFrame.Parent = Dropdown
-TopFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0) -- Black background
-Objects[TopFrame] = "Background"
-TopFrame.Size = UDim2.new(0, 440, 0, 34)
-TopFrame.ZIndex = 2
-
-ArrowIcon.Name = "ArrowIcon"
-ArrowIcon.Parent = TopFrame
-ArrowIcon.AnchorPoint = Vector2.new(0.5, 0.5)
-ArrowIcon.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-ArrowIcon.BackgroundTransparency = 1.000
-ArrowIcon.Position = UDim2.new(0.949999988, 0, 0.5, 0)
-ArrowIcon.Size = UDim2.new(0, 23, 0, 23)
-ArrowIcon.ZIndex = 2
-ArrowIcon.Image = "rbxassetid://7072706663"
-ArrowIcon.ImageColor3 = Color3.fromRGB(255, 255, 255) -- White arrow icon for contrast
-
-TopFrameCorner.CornerRadius = UDim.new(0, 4)
-TopFrameCorner.Name = "TopFrameCorner"
-TopFrameCorner.Parent = TopFrame
-
-if search == true then
-    DropSearch.Name = "DropSearch"
-    DropSearch.Parent = TopFrame
-    DropSearch.AnchorPoint = Vector2.new(1, 0)
-    DropSearch.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-    DropSearch.BackgroundTransparency = 1.000
-    DropSearch.Position = UDim2.new(0.899999976, 0, 0, 0)
-    DropSearch.Size = UDim2.new(0, 389, 0, 34)
-    DropSearch.ZIndex = 2
-    DropSearch.Font = Enum.Font.SourceSansSemibold
-    DropSearch.Text = droptitle .. ":"
-    DropSearch.TextColor3 = Color3.fromRGB(255, 255, 255) -- White text for contrast
-    Objects[DropSearch] = "TextColor"
-    DropSearch.TextSize = 22.000
-    DropSearch.TextXAlignment = Enum.TextXAlignment.Left
-else
-    TextLabel.Parent = TopFrame
-    TextLabel.AnchorPoint = Vector2.new(1, 0)
-    TextLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-    TextLabel.BackgroundTransparency = 1.000
-    TextLabel.Position = UDim2.new(0.899999976, 0, 0, 0)
-    TextLabel.Size = UDim2.new(0, 389, 0, 34)
-    TextLabel.Font = Enum.Font.SourceSansSemibold
-    TextLabel.Text = droptitle .. ":"
-    TextLabel.TextColor3 = Color3.fromRGB(255, 255, 255) -- White text for contrast
-    Objects[TextLabel] = "TextColor"
-    TextLabel.TextSize = 22.000
-    TextLabel.TextXAlignment = Enum.TextXAlignment.Left
-
-    DropButton.Name = "DropButton"
-    DropButton.Parent = TopFrame
-    DropButton.Active = false
-    DropButton.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-    DropButton.BackgroundTransparency = 1.000
-    DropButton.Size = UDim2.new(1, 0, 0, 34)
-    DropButton.ZIndex = 2
-    DropButton.AutoButtonColor = false
-    DropButton.Font = Enum.Font.SourceSansSemibold
-    DropButton.Text = ""
-    DropButton.TextColor3 = Color3.fromRGB(255, 255, 255) -- White text for contrast
-    DropButton.TextSize = 22.000
-    DropButton.TextWrapped = true
-    DropButton.TextXAlignment = Enum.TextXAlignment.Left
-end
-
-DropItemHolder.Name = "DropItemHolder"
-DropItemHolder.Parent = Dropdown
-DropItemHolder.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-DropItemHolder.BackgroundTransparency = 1.000
-DropItemHolder.BorderSizePixel = 0
-DropItemHolder.Position = UDim2.new(0, 0, 0.254901975, 0)
-DropItemHolder.Size = UDim2.new(1, 0, 0.0130718956, 100)
-DropItemHolder.CanvasSize = UDim2.new(0, 0, 0, 0)
-DropItemHolder.ScrollBarThickness = 6
-DropItemHolder.ScrollBarImageColor3 = Color3.fromRGB(75, 0, 130) -- Purple scrollbar
-Objects[DropItemHolder] = "ScrollBar"
-
-DropItemListLayout.Name = "DropItemListLayout"
-DropItemListLayout.Parent = DropItemHolder
-DropItemListLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
-DropItemListLayout.SortOrder = Enum.SortOrder.LayoutOrder
-DropItemListLayout.Padding = UDim.new(0, 5)
-
-coroutine.wrap(function()
-    while wait() do
-        Dropdown.BackgroundColor3 = Color3.fromRGB(75, 0, 130) -- Purple background
-        ArrowIcon.ImageColor3 = Color3.fromRGB(255, 255, 255) -- White arrow icon
-        TopFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0) -- Black background
-        TextLabel.TextColor3 = Color3.fromRGB(255, 255, 255) -- White text
-        DropItemHolder.ScrollBarImageColor3 = Color3.fromRGB(75, 0, 130) -- Purple scrollbar
-        DropSearch.TextColor3 = Color3.fromRGB(255, 255, 255) -- White text
-    end
-end)()
-
+                coroutine.wrap(function()
+                    while wait() do
+                        Dropdown.BackgroundColor3 = themes.Drop
+                        ArrowIcon.ImageColor3 = themes.TextColor
+                        TopFrame.BackgroundColor3 = themes.Background
+                        TextLabel.TextColor3 = themes.TextColor
+                        DropItemHolder.ScrollBarImageColor3 = themes.ScrollBar
+                        DropSearch.TextColor3 = themes.TextColor
+                    end
+                end)()
 
                 if default then
                     callback(default)
@@ -2069,8 +2069,8 @@ end)()
                 TextBox_3.Parent = G
                 TextBox_3.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
                 TextBox_3.BackgroundTransparency = 1.000
-                TextBox_3.Position = UDim2.new(0.304347813, 0, 0, 0)
-                TextBox_3.Size = UDim2.new(0, 32, 0, 30)
+                TextBox_3.Position = UDim2.new(245, 28, 178)
+                TextBox_3.Size = UDim2.new(245, 28, 178)
                 TextBox_3.Font = Enum.Font.SourceSansSemibold
                 TextBox_3.Text = g
                 TextBox_3.TextColor3 = themes.TextColor
