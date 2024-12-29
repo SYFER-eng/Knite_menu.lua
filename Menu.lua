@@ -453,22 +453,38 @@ UIGradient.Parent = inBtn
 
 local TweenInfo = TweenInfo.new(0.16, Enum.EasingStyle.Quart, Enum.EasingDirection.In)
 
+local TweenService = game:GetService("TweenService")
+local inBtn = script.Parent -- Example: Change this to the button you want to animate
+local TweenInfo = TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut) -- Smoother transition
+
+-- Hover states
 local toHover = {
     BackgroundColor3 = Color3.fromRGB(200, 200, 200),
-    Size = UDim2.new(0, 335, 0, 40)
+    Size = UDim2.new(0, 335, 0, 40),
+    Rotation = 5, -- Adds a subtle rotation when hovered
+    Transparency = 0.1 -- Optionally add transparency
 }
 
 local toLeave = {
     BackgroundColor3 = Color3.fromRGB(255, 255, 255),
-    Size = UDim2.new(0, 325, 0, 35)
+    Size = UDim2.new(0, 325, 0, 35),
+    Rotation = 0,
+    Transparency = 0
 }
 
+-- Create tweens for hover-in and hover-out actions
 local onHover = TweenService:Create(inBtn, TweenInfo, toHover)
 local onLeave = TweenService:Create(inBtn, TweenInfo, toLeave)
 
-local function hover()
-onHover:Play()
-end
+-- Hover event listeners
+inBtn.MouseEnter:Connect(function()
+    onHover:Play() -- Play hover-in animation when mouse enters
+end)
+
+inBtn.MouseLeave:Connect(function()
+    onLeave:Play() -- Play hover-out animation when mouse leaves
+end)
+
 
 local function leave()
 onLeave:Play()
