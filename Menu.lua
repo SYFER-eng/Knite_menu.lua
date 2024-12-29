@@ -1,185 +1,197 @@
+-- Destroy any existing GUI elements before creating new ones
 if ScreenGui_ then
-ScreenGui_:Destroy()
+    ScreenGui_:Destroy()
 end
 
 if Scathe_ then
-Scathe_:Destroy()
+    Scathe_:Destroy()
 end
+
 -- GUI's
 local gui = script.Parent
 
--- defining Services
+-- Services
 local TweenService = game:GetService("TweenService")
-
 local UserInputService = game:GetService("UserInputService")
-
 local RunService = game:GetService("RunService")
-
--- Player
-local players = game:GetService("Players")
 local Players = game:GetService("Players")
-local lplayer = players.LocalPlayer
+local ContentProvider = game:GetService("ContentProvider")
+
+-- Local Player
+local lplayer = Players.LocalPlayer
 local lhum = lplayer.Character:FindFirstChildWhichIsA("Humanoid")
 local lhump = lplayer.Character:FindFirstChild("HumanoidRootPart")
-
 local Mouse = lplayer:GetMouse()
 
-local mouse = lplayer:GetMouse()
-
--- defining CoreGui
+-- Determine CoreGui based on environment (Studio or Game)
+local CoreGui
 if RunService:IsStudio() then
--- In Studio we use PlayerGui Instead of CoreGui
-CoreGui = player:WaitForChild("PlayerGui")
+    CoreGui = lplayer:WaitForChild("PlayerGui")
 else
--- If its executed in a game then we use CoreGui (no lacking perms)
     CoreGui = game.CoreGui
 end
 
 local Lib = {}
 
+-- Function to find a player by name prefix
 function Lib:ReturnPlayer(text)
-for i,v in pairs(game:GetService("Players"):GetPlayers()) do
-if (string.sub(string.lower(v.Name),1,string.len(text))) == string.lower(text) then
-text = v
-return text
-end
-end
+    for _, v in pairs(Players:GetPlayers()) do
+        if string.sub(string.lower(v.Name), 1, #text) == string.lower(text) then
+            return v
+        end
+    end
 end
 
+-- Function to generate a random string of a random length
 function Lib:Randomized()
-local length = math.random(10,20)
-local array = {}
-for i = 1, length do
-array[i] = string.char(math.random(32, 126))
-end
-return table.concat(array)
-end
-
-function Lib:UICorner(instance,num)
-local UIC = Instance.new("UICorner")
-local num = num or 8
-UIC.CornerRadius = UDim.new(0, num)
-UIC.Parent = instance
-return UIC
+    local length = math.random(10, 20)
+    local array = {}
+    for i = 1, length do
+        array[i] = string.char(math.random(32, 126))
+    end
+    return table.concat(array)
 end
 
-function Lib:UIPad(instance,num,a,b,c)
-local UIP = Instance.new("UIPadding")
-UIP.Parent = instance
-return UIP
+-- Function to create a UI corner
+function Lib:UICorner(instance, num)
+    num = num or 8
+    local UIC = Instance.new("UICorner")
+    UIC.CornerRadius = UDim.new(0, num)
+    UIC.Parent = instance
+    return UIC
 end
 
-function Lib:UIList(instance,num,align)
-local UIL = Instance.new("UIListLayout")
-local align = align or "Center"
-UIL.Padding = UDim.new(0,num)
-UIL.HorizontalAlignment = align
-UIL.SortOrder = "LayoutOrder"
-UIL.Parent = instance
-return UIL
+-- Function to add padding to a UI element
+function Lib:UIPad(instance, num)
+    local UIP = Instance.new("UIPadding")
+    UIP.Parent = instance
+    return UIP
 end
 
-function Lib:Shine(instance,duration)
-
+-- Function to create a UI list layout
+function Lib:UIList(instance, num, align)
+    local UIL = Instance.new("UIListLayout")
+    UIL.Padding = UDim.new(0, num)
+    UIL.HorizontalAlignment = align or "Center"
+    UIL.SortOrder = Enum.SortOrder.LayoutOrder
+    UIL.Parent = instance
+    return UIL
 end
 
-local Ts = game:GetService("TweenService")
-
+-- Preload notification icons
 local Warning_ = "http://www.roblox.com/asset/?id=3192540038"
-
 local Success_ = "http://www.roblox.com/asset/?id=279548030"
-
 local Error_ = "http://www.roblox.com/asset/?id=2022095309"
 
-local ScreenGuis = Instance.new("ScreenGui")
+ContentProvider:PreloadAsync({Success_, Warning_, Error_})
 
+-- Creating the ScreenGui for notifications
+local ScreenGuis = Instance.new("ScreenGui")
 getgenv().Scathe_ = ScreenGuis
 
 local Frame_ = Instance.new("Frame")
-
-local List = Instance.new("UIListLayout",Frame_)
-
+local List = Instance.new("UIListLayout", Frame_)
 local Icon_ = Instance.new("ImageLabel")
 
-local CProvider = game:GetService("ContentProvider")
-CProvider:PreloadAsync({
-    Success_,Warning_,Error_
-})
+-- Notification function
+function Lib:Notification(type, name, content, time)
+    time = time or 4
 
-function Lib:Notification(types, name, content,time)
-task.spawn(function()
+    -- Create the notification frame
     local notification = Instance.new("Frame")
-    local UICorner = Instance.new("UICorner")
-    local bottomFrame = Instance.new("Frame")
-    local bottomFrame_UICorner = Instance.new("UICorner")
-    local time = time or 4
-    local notificationName = Instance.new("TextLabel")
-    local notificationContent = Instance.new("TextLabel")
-    local Icon = Instance.new("ImageLabel")
-
-    ScreenGuis.Parent = game:GetService("CoreGui")
-    ScreenGuis.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-
-    ScreenGuis.Enabled = true
-
-    Frame_.AnchorPoint = Vector2.new(0.5,0.5)
-    Frame_.Position = UDim2.new(0.88,0,0.5,0)
-    Frame_.Size = UDim2.new(1,0,1.09,0)
-    Frame_.BackgroundTransparency = 1
-    Frame_.Parent = ScreenGuis
-
-    Lib:UIList(Frame_,4,"Center")
-
     notification.Name = "notification"
-    notification.Parent = Frame_
     notification.BackgroundColor3 = Color3.fromRGB(48, 48, 48)
     notification.BorderSizePixel = 0
-    notification.AnchorPoint = Vector2.new(0.5,0.5)
+    notification.AnchorPoint = Vector2.new(0.5, 0.5)
     notification.Position = UDim2.new(0.5, 0, 0, 0)
     notification.Size = UDim2.new(0, 363, 0, 72)
     notification.ZIndex = 10
 
-    Lib:UICorner(notification,3)
+    -- Apply corner radius
+    Lib:UICorner(notification, 3)
 
+    -- Bottom frame
+    local bottomFrame = Instance.new("Frame")
     bottomFrame.Name = "bottomFrame"
-    bottomFrame.Parent = notification
     bottomFrame.BackgroundColor3 = Color3.fromRGB(38, 38, 38)
     bottomFrame.BorderSizePixel = 0
-    bottomFrame.Position = UDim2.new(0, 0, 0.665449977, 0)
+    bottomFrame.Position = UDim2.new(0, 0, 0.665, 0)
     bottomFrame.Size = UDim2.new(0, 362, 0, 24)
     bottomFrame.ZIndex = 10
 
-    bottomFrame_UICorner.CornerRadius = UDim.new(0, 3)
-    bottomFrame_UICorner.Parent = bottomFrame
+    -- Apply corner radius to the bottom frame
+    Lib:UICorner(bottomFrame, 3)
 
+    -- Notification name
+    local notificationName = Instance.new("TextLabel")
     notificationName.Name = "notificationName"
-    notificationName.Parent = notification
     notificationName.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-    notificationName.BackgroundTransparency = 1.000
-    notificationName.Position = UDim2.new(0.140495867, 0, 0.0985915512, 0)
+    notificationName.BackgroundTransparency = 1
+    notificationName.Position = UDim2.new(0.14, 0, 0.1, 0)
     notificationName.Size = UDim2.new(0, 300, 0, 17)
     notificationName.Font = Enum.Font.GothamBold
     notificationName.Text = tostring(name)
     notificationName.TextScaled = true
     notificationName.TextColor3 = Color3.fromRGB(255, 255, 255)
-    notificationName.TextSize = 13.000
+    notificationName.TextSize = 13
     notificationName.TextXAlignment = Enum.TextXAlignment.Left
     notificationName.TextYAlignment = Enum.TextYAlignment.Top
     notificationName.ZIndex = 10
 
+    -- Notification content
+    local notificationContent = Instance.new("TextLabel")
     notificationContent.Name = "notificationContent"
-    notificationContent.Parent = notification
     notificationContent.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-    notificationContent.BackgroundTransparency = 1.000
-    notificationContent.Position = UDim2.new(0.140495867, 0, 0.309663534, 0)
+    notificationContent.BackgroundTransparency = 1
+    notificationContent.Position = UDim2.new(0.14, 0, 0.31, 0)
     notificationContent.Size = UDim2.new(0, 312, 0, 26)
     notificationContent.Font = Enum.Font.Gotham
     notificationContent.Text = tostring(content)
-    notificationContent.TextScaled = Scaler
+    notificationContent.TextScaled = true
     notificationContent.TextColor3 = Color3.fromRGB(150, 150, 150)
-    notificationContent.TextSize = 13.000
+    notificationContent.TextSize = 13
     notificationContent.TextXAlignment = Enum.TextXAlignment.Left
     notificationContent.ZIndex = 10
+
+    -- Set notification icon based on type
+    local Icon = Instance.new("ImageLabel")
+    Icon.Parent = notification
+    Icon.Size = UDim2.new(0, 24, 0, 24)
+    Icon.Position = UDim2.new(0, 10, 0.1, 0)
+    if type == "Success" then
+        Icon.Image = Success_
+    elseif type == "Warning" then
+        Icon.Image = Warning_
+    elseif type == "Error" then
+        Icon.Image = Error_
+    end
+
+    -- Parent everything to the ScreenGui
+    notification.Parent = Frame_
+    bottomFrame.Parent = notification
+    notificationName.Parent = notification
+    notificationContent.Parent = notification
+    Icon.Parent = notification
+
+    -- Show the notification
+    ScreenGuis.Parent = CoreGui
+    ScreenGuis.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+    ScreenGuis.Enabled = true
+
+    -- Tweening the notification in and out
+    local tweenInfo = TweenInfo.new(time, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+    local goal = {Position = UDim2.new(0.5, 0, -0.1, 0)}
+
+    local tween = TweenService:Create(notification, tweenInfo, goal)
+    tween:Play()
+
+    -- Destroy the notification after the duration
+    tween.Completed:Connect(function()
+        notification:Destroy()
+    end)
+end
+
+return Lib
 
     local typer = tostring(types)
     local types = string.lower(typer)
