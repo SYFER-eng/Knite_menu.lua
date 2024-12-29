@@ -597,152 +597,151 @@ Lib:UICorner(designA,4)
 return inBtn
 end
 
-function Tab:CreateToggle(name,state,clicked)
-local name = name or "Toggle"
-local clicked = clicked or function() end
-local inBtn = Instance.new("TextButton")
-local box = Instance.new("TextButton")
-local highlight = Instance.new("TextButton")
-local UIGradient = Instance.new("UIGradient")
-local UIGradients = Instance.new("UIGradient")
-local designA = Instance.new("TextLabel")
-local state = state or false
+local TweenService = game:GetService("TweenService")
 
-inBtn.AutoButtonColor = false
-inBtn.Name = "inBtn"
-inBtn.Parent = inTab
-inBtn.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-inBtn.BorderSizePixel = 0
-inBtn.Position = UDim2.new(0.10204082, 0, 0.0136783719, 0)
-inBtn.Size = UDim2.new(0, 325, 0, 35)
-inBtn.Font = Enum.Font.Gotham
-inBtn.Text = tostring(name)
-inBtn.TextWrapped = true
-inBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-inBtn.TextSize = 11.000
+function Tab:CreateToggle(name, state, clicked)
+    name = name or "Toggle"
+    clicked = clicked or function() end
+    state = state or false
 
-Lib:UICorner(inBtn,6)
+    local toggleButton = Instance.new("TextButton")
+    local highlight = Instance.new("TextButton")
+    local box = Instance.new("TextButton")
+    local designA = Instance.new("TextLabel")
+    local UIGradient = Instance.new("UIGradient")
 
-designA.Active = false
-designA.Name = "designA"
-designA.Parent = inBtn
-designA.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-designA.BackgroundTransparency = 1
-designA.Position = UDim2.new(0, 0, 0, 0)
-designA.Size = UDim2.new(0, 325, 0, 35)
-designA.Font = Enum.Font.Gotham
-designA.Text = tostring(name)
-designA.TextWrapped = true
-designA.TextColor3 = Color3.fromRGB(255, 255, 255)
-designA.TextSize = 11.000
+    toggleButton.AutoButtonColor = false
+    toggleButton.Name = "ToggleButton"
+    toggleButton.Parent = inTab
+    toggleButton.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    toggleButton.BorderSizePixel = 0
+    toggleButton.Position = UDim2.new(0.10204082, 0, 0.0136783719, 0)
+    toggleButton.Size = UDim2.new(0, 325, 0, 35)
+    toggleButton.Font = Enum.Font.Gotham
+    toggleButton.Text = tostring(name)
+    toggleButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+    toggleButton.TextSize = 11
+    toggleButton.TextWrapped = true
 
-Lib:UICorner(designA,4)
+    Lib:UICorner(toggleButton, 6)
 
-box.Active = false
-box.AutoButtonColor = false
-box.Name = "box"
-box.Parent = inBtn
-box.BackgroundColor3 = Color3.fromRGB(21, 21, 21)
-box.BorderSizePixel = 0
-box.Position = UDim2.new(0.915, 0, 0.08, 0)
-box.Size = UDim2.new(0.07,0,0.65,0)
-box.Font = Enum.Font.Gotham
-box.Text = ""
-box.TextWrapped = true
-box.TextColor3 = Color3.fromRGB(255, 255, 255)
+    -- Label Design
+    designA.Active = false
+    designA.Name = "DesignA"
+    designA.Parent = toggleButton
+    designA.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+    designA.BackgroundTransparency = 1
+    designA.Position = UDim2.new(0, 0, 0, 0)
+    designA.Size = UDim2.new(0, 325, 0, 35)
+    designA.Font = Enum.Font.Gotham
+    designA.Text = tostring(name)
+    designA.TextColor3 = Color3.fromRGB(255, 255, 255)
+    designA.TextSize = 11
+    Lib:UICorner(designA, 4)
 
-Lib:UICorner(box,20)
+    -- Box Design
+    box.AutoButtonColor = false
+    box.Name = "Box"
+    box.Parent = toggleButton
+    box.BackgroundColor3 = Color3.fromRGB(21, 21, 21)
+    box.BorderSizePixel = 0
+    box.Position = UDim2.new(0.915, 0, 0.08, 0)
+    box.Size = UDim2.new(0.07, 0, 0.65, 0)
+    Lib:UICorner(box, 20)
 
-highlight.Active = false
-highlight.AutoButtonColor = false
-highlight.Name = "highlight"
-highlight.Parent = inBtn
-highlight.BackgroundColor3 = Color3.fromRGB(25,125,25)
-highlight.BorderSizePixel = 0
-highlight.Position = UDim2.new(0.928, 0, 0.19, 0)
-highlight.Size = UDim2.new(0.045, 0, 0.4, 0)
-highlight.Font = Enum.Font.Gotham
-highlight.Text = ""
-highlight.TextWrapped = true
-highlight.TextColor3 = Color3.fromRGB(255, 255, 255)
+    -- Highlight Design
+    highlight.AutoButtonColor = false
+    highlight.Name = "Highlight"
+    highlight.Parent = toggleButton
+    highlight.BackgroundColor3 = Color3.fromRGB(25, 125, 25)
+    highlight.BorderSizePixel = 0
+    highlight.Position = UDim2.new(0.928, 0, 0.19, 0)
+    highlight.Size = UDim2.new(0.045, 0, 0.4, 0)
+    Lib:UICorner(highlight, 25)
 
-Lib:UICorner(highlight,25)
+    -- UI Gradient for the button
+    UIGradient.Color = ColorSequence.new {
+        ColorSequenceKeypoint.new(0.00, Color3.fromRGB(70, 26, 165)),
+        ColorSequenceKeypoint.new(0.001, Color3.fromRGB(31, 29, 33)),
+        ColorSequenceKeypoint.new(1.00, Color3.fromRGB(30, 30, 30))
+    }
+    UIGradient.Rotation = 15
+    UIGradient.Offset = Vector2.new(-0.225, 0)
+    UIGradient.Parent = toggleButton
 
-UIGradient.Color = ColorSequence.new {
-    ColorSequenceKeypoint.new(0.00, Color3.fromRGB(70, 26, 165)),
-    ColorSequenceKeypoint.new(0.001, Color3.fromRGB(31, 29, 33)),
-    ColorSequenceKeypoint.new(1.00, Color3.fromRGB(30, 30, 30))
-}
-UIGradient.Rotation = 15
-UIGradient.Offset = Vector2.new(-0.225,0)
-UIGradient.Parent = inBtn
+    local TweenInfo = TweenInfo.new(0.2, Enum.EasingStyle.Quart, Enum.EasingDirection.In)
 
-local TweenInfo = TweenInfo.new(0.2, Enum.EasingStyle.Quart, Enum.EasingDirection.In)
+    -- Tween States
+    local toOpen = { BackgroundColor3 = Color3.fromRGB(25, 255, 25) }
+    local toClose = { BackgroundColor3 = Color3.fromRGB(75, 18, 18) }
+    local toHover = {
+        BackgroundColor3 = Color3.fromRGB(200, 200, 200),
+        Size = UDim2.new(0, 335, 0, 40)
+    }
+    local toLeave = {
+        BackgroundColor3 = Color3.fromRGB(255, 255, 255),
+        Size = UDim2.new(0, 325, 0, 35)
+    }
 
-local toOpen = {
-    BackgroundColor3 = Color3.fromRGB(25,255,25),
-}
+    -- Tweens for Hovering and Leaving
+    local onHover = TweenService:Create(toggleButton, TweenInfo, toHover)
+    local onLeave = TweenService:Create(toggleButton, TweenInfo, toLeave)
+    local onOpen = TweenService:Create(highlight, TweenInfo, toOpen)
+    local onClose = TweenService:Create(highlight, TweenInfo, toClose)
 
-local toClose = {
-    BackgroundColor3 = Color3.fromRGB(75,18,18),
-}
+    -- Highlight function
+    local function highlighter()
+        if state then
+            onOpen:Play()
+        else
+            onClose:Play()
+        end
+    end
 
-local toHover = {
-    BackgroundColor3 = Color3.fromRGB(200, 200, 200),
-    Size = UDim2.new(0, 335, 0, 40)
-}
+    -- Hover functions
+    local function onButtonHover()
+        onHover:Play()
+    end
 
-local toLeave = {
-    BackgroundColor3 = Color3.fromRGB(255, 255, 255),
-    Size = UDim2.new(0, 325, 0, 35)
-}
+    local function onButtonLeave()
+        onLeave:Play()
+    end
 
-local onHover = TweenService:Create(inBtn, TweenInfo, toHover)
-local onLeave = TweenService:Create(inBtn, TweenInfo, toLeave)
-local onOpen = TweenService:Create(highlight, TweenInfo, toOpen)
-local onClose = TweenService:Create(highlight, TweenInfo, toClose)
+    -- Click function
+    local function onButtonClick()
+        onButtonLeave()
+        state = not state
+        highlighter()
+        pcall(function()
+            clicked(state, toggleButton)
+        end)
+    end
 
-function highlighter()
-if state then
-onOpen:Play()
-else
-    onClose:Play()
+    -- Add Hover Events
+    toggleButton.MouseEnter:Connect(onButtonHover)
+    toggleButton.MouseLeave:Connect(onButtonLeave)
+    toggleButton.MouseButton1Click:Connect(onButtonClick)
+
+    -- Initializing highlight based on state
+    highlighter()
+
+    -- Button animation when clicked
+    local function buttonClickAnimation()
+        local normalSize = UDim2.new(0, 325, 0, 35)
+        local biggerSize = UDim2.new(0, 335, 0, 38)
+
+        local normalPosition = toggleButton.Position
+        local correctedPosition = toggleButton.Position - UDim2.new(0.017, 0, 0.008, 0)
+
+        toggleButton:TweenSizeAndPosition(biggerSize, correctedPosition, Enum.EasingDirection.Out, Enum.EasingStyle.Sine, 0.25, true)
+        wait(0.2)
+        toggleButton:TweenSizeAndPosition(normalSize, normalPosition, Enum.EasingDirection.Out, Enum.EasingStyle.Sine, 0.25, true)
+    end
+
+    -- Add click animation
+    toggleButton.MouseButton1Click:Connect(buttonClickAnimation)
 end
-end
 
-highlighter()
-
-local function hover()
-onHover:Play()
-end
-
-local function leave()
-onLeave:Play()
-end
-
-local function click()
-leave()
-state = not state
-highlighter()
-pcall(function()
-    clicked(state,inBtn)
-    end)
-end
-
-local btn = inBtn
-
-function button_click()
-
-local normal_size = UDim2.new(0,325,0,35)
-local bigger_size = UDim2.new(0, 335, 0, 38)
-
-local normal_position = btn.Position
-local corrected_position = btn.Position - UDim2.new(0.017, 0, 0.008, 0)
-
-btn:TweenSizeAndPosition(bigger_size, corrected_position, Enum.EasingDirection.Out, Enum.EasingStyle.Sine, 0.25, true)
-wait(0.2)
-btn:TweenSizeAndPosition(normal_size, normal_position, Enum.EasingDirection.Out, Enum.EasingStyle.Sine, 0.25, true)
-end
 
 btn.MouseButton1Click:Connect(button_click)
 
