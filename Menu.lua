@@ -317,87 +317,110 @@ local visibles = {}
 local tabsCreated = 0
 
 function Lib:CreateTab(name, clicked)
-local tabBtn = Instance.new("TextButton")
-local inTab = Instance.new("ScrollingFrame")
-local designA = Instance.new("TextLabel")
-local clicked = clicked or function() end
-local UIGradient = Instance.new("UIGradient")
-tabsCreated = tabsCreated + 1
+    -- Default clicked callback function
+    clicked = clicked or function() end
 
-tabBtn.AutoButtonColor = false
-tabBtn.Name = "inBtn"
-tabBtn.Parent = tabList
-tabBtn.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-tabBtn.Position = UDim2.new(0.10204082, 0, 0.0136783719, 0)
-tabBtn.Size = UDim2.new(0, 118, 0, 26)
-tabBtn.Selectable = false
-tabBtn.Font = Enum.Font.Gotham
-tabBtn.Text = tostring(name)
-tabBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-tabBtn.TextSize = 11.000
-tabBtn.TextWrapped = true
+    -- Creating the Tab Button
+    local tabBtn = Instance.new("TextButton")
+    tabBtn.Name = "TabButton"
+    tabBtn.Parent = tabList
+    tabBtn.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    tabBtn.Position = UDim2.new(0.102, 0, 0.0137, 0)
+    tabBtn.Size = UDim2.new(0, 118, 0, 26)
+    tabBtn.Selectable = false
+    tabBtn.Font = Enum.Font.Gotham
+    tabBtn.Text = tostring(name)
+    tabBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+    tabBtn.TextSize = 11
+    tabBtn.TextWrapped = true
 
-Lib:UICorner(tabBtn,4)
+    -- Adding corner radius
+    Lib:UICorner(tabBtn, 4)
 
-designA.Active = false
-designA.Name = "designA"
-designA.Parent = tabBtn
-designA.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-designA.BackgroundTransparency = 1
-designA.Position = UDim2.new(0, 0, 0, 0)
-designA.Size = UDim2.new(0, 118, 0, 26)
-designA.Font = Enum.Font.Gotham
-designA.Text = tostring(name)
-designA.TextWrapped = true
-designA.TextColor3 = Color3.fromRGB(255, 255, 255)
-designA.TextSize = 11.000
+    -- Create additional label for design purposes (appears to be a shadow effect)
+    local designLabel = Instance.new("TextLabel")
+    designLabel.Name = "DesignLabel"
+    designLabel.Parent = tabBtn
+    designLabel.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+    designLabel.BackgroundTransparency = 1
+    designLabel.Position = UDim2.new(0, 0, 0, 0)
+    designLabel.Size = UDim2.new(0, 118, 0, 26)
+    designLabel.Font = Enum.Font.Gotham
+    designLabel.Text = tostring(name)
+    designLabel.TextWrapped = true
+    designLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+    designLabel.TextSize = 11
 
-Lib:UICorner(designA,4)
+    -- Adding corner radius to design label
+    Lib:UICorner(designLabel, 4)
 
-inTab.Name = "inTab"
-inTab.Parent = mainFrame
-inTab.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-inTab.BorderSizePixel = 0
-inTab.Position = UDim2.new(0.304744512, 0, 0.0834914595, 0)
-inTab.Size = UDim2.new(0, 372, 0, 350)
-local inTabCanvas = Lib:UIList(inTab,8)
-bigChunk = 0
-inTab.ChildAdded:Connect(function(child)
-    if not string.find(child.ClassName,"UI") then
-inTab.CanvasSize = UDim2.new(0,0,0,inTabCanvas.AbsoluteContentSize.Y+inTabCanvas.Padding.Offset+bigChunk)
-end
+    -- Creating the tab content frame
+    local contentTab = Instance.new("ScrollingFrame")
+    contentTab.Name = "ContentTab"
+    contentTab.Parent = mainFrame
+    contentTab.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+    contentTab.BorderSizePixel = 0
+    contentTab.Position = UDim2.new(0.3047, 0, 0.0835, 0)
+    contentTab.Size = UDim2.new(0, 372, 0, 350)
+
+    -- Handling content list inside the tab
+    local contentList = Lib:UIList(contentTab, 8)
+    local extraPadding = 0
+
+    -- Update canvas size when new UI elements are added
+    contentTab.ChildAdded:Connect(function(child)
+        if not string.find(child.ClassName, "UI") then
+            contentTab.CanvasSize = UDim2.new(0, 0, 0, contentList.AbsoluteContentSize.Y + contentList.Padding.Offset + extraPadding)
+        end
     end)
-if tabsCreated >= 2 then
-inTab.Visible = false
-end
 
-UIGradient.Color = ColorSequence.new {
-    ColorSequenceKeypoint.new(0.00, Color3.fromRGB(70, 26, 165)), ColorSequenceKeypoint.new(0.001, Color3.fromRGB(31, 29, 33)), ColorSequenceKeypoint.new(1.00, Color3.fromRGB(30, 30, 30))}
-UIGradient.Rotation = 15
-UIGradient.Parent = tabBtn
+    -- Hiding all tabs initially if more than one tab is created
+    if tabsCreated >= 2 then
+        contentTab.Visible = false
+    end
 
-table.insert(visibles,inTab)
+    -- Add gradient effect to the tab button
+    local uiGradient = Instance.new("UIGradient")
+    uiGradient.Color = ColorSequence.new({
+        ColorSequenceKeypoint.new(0.00, Color3.fromRGB(70, 26, 165)),
+        ColorSequenceKeypoint.new(0.001, Color3.fromRGB(31, 29, 33)),
+        ColorSequenceKeypoint.new(1.00, Color3.fromRGB(30, 30, 30))
+    })
+    uiGradient.Rotation = 15
+    uiGradient.Parent = tabBtn
 
-local UIPadA = Lib:UIPad(inTab)
-UIPadA.PaddingTop = UDim.new(0,8)
+    -- Add the content tab to the visible tabs list
+    table.insert(visibles, contentTab)
 
-local function tabClick()
-for i, vis in pairs(visibles) do
-for i, v in pairs(vis:GetDescendants()) do
-if not string.find(v.ClassName,"UI") and not string.find(v.Name,"Exceptionally") then
-v.Visible = false
-end
-end
-vis.Visible = false
-end
-for i, v in pairs(inTab:GetDescendants()) do
-if not string.find(v.ClassName,"UI") then
-v.Visible = true
-end
-end
-inTab.Visible = true
-end
+    -- Apply padding to the tab content
+    local padding = Lib:UIPad(contentTab)
+    padding.PaddingTop = UDim.new(0, 8)
 
+    -- Function to handle tab click event
+    local function onTabClick()
+        -- Hide all other tabs and their content
+        for _, tab in pairs(visibles) do
+            for _, v in pairs(tab:GetDescendants()) do
+                if not string.find(v.ClassName, "UI") and not string.find(v.Name, "Exceptionally") then
+                    v.Visible = false
+                end
+            end
+            tab.Visible = false
+        end
+
+        -- Show the current tab content
+        for _, v in pairs(contentTab:GetDescendants()) do
+            if not string.find(v.ClassName, "UI") then
+                v.Visible = true
+            end
+        end
+        contentTab.Visible = true
+    end
+
+    -- Connect the tab button to the tab click function
+    tabBtn.MouseButton1Click:Connect(onTabClick)
+end
+    
 tabBtn.MouseButton1Click:Connect(tabClick)
 tabBtn.MouseButton1Click:Connect(clicked)
 
