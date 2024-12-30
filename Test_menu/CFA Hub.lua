@@ -1934,7 +1934,7 @@ function CFAHub:CreateWindow(title, gameName, intro)
                     ColorSequenceKeypoint.new(0.00, Color3.fromRGB(255, 0, 0)),
                     ColorSequenceKeypoint.new(0.17, Color3.fromRGB(255, 255, 0)),
                     ColorSequenceKeypoint.new(0.33, Color3.fromRGB(0, 255, 0)),
-                    ColorSequenceKeypoint.new(0.50, Color3.fromRGB(0, 255, 255)),
+                    ColorSequenceKeypoint.new(0.50, Color3.fromRGB(245, 28, 178)),
                     ColorSequenceKeypoint.new(0.66, Color3.fromRGB(0, 0, 255)),
                     ColorSequenceKeypoint.new(0.82, Color3.fromRGB(255, 0, 255)),
                     ColorSequenceKeypoint.new(1.00, Color3.fromRGB(255, 0, 0))
@@ -2056,7 +2056,7 @@ function CFAHub:CreateWindow(title, gameName, intro)
                 Text_3.Size = UDim2.new(0, 12, 1, 0)
                 Text_3.Font = Enum.Font.SourceSansSemibold
                 Text_3.Text = "G"
-                Text_3.TextColor3 = Color3.fromRGB(245, 28, 178)
+                Text_3.TextColor3 = Color3.fromRGB(0, 255, 0)
                 Text_3.TextSize = 20.000
                 Text_3.TextWrapped = true
                 
