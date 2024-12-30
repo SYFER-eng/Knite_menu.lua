@@ -1,6 +1,5 @@
 local WAIT = task.wait
 local TBINSERT = table.insert
-local TBREMOVE = table.remove
 local V2 = Vector2.new
 local ROUND = math.round
 
@@ -9,8 +8,8 @@ local Camera = workspace.CurrentCamera
 local To2D = Camera.WorldToViewportPoint
 local LocalPlayer = game.Players.LocalPlayer
 
-local Library = {};
-Library.__index = Library;
+local Library = {}
+Library.__index = Library
 
 -- Create a line with specific parameters
 function Library:NewLine(info)
@@ -22,7 +21,7 @@ function Library:NewLine(info)
     return l
 end
 
--- Smoothen a vector
+-- Smoothen a vector (rounding the coordinates)
 function Library:Smoothen(v)
     return V2(ROUND(v.X), ROUND(v.Y))
 end
@@ -116,6 +115,13 @@ function Skeleton:SetDoSubsteps(State)
     self.DoSubsteps = State
 end
 
+-- Check if a part is visible to the camera using raycasting
+function Skeleton:IsVisible(part)
+    local ray = Ray.new(Camera.CFrame.p, (part.Position - Camera.CFrame.p).unit * 1000) -- Create a ray from the camera to the part
+    local hit, position = workspace:FindPartOnRay(ray, self.Player.Character)
+    return hit == nil -- If the ray doesn't hit anything, the part is visible
+end
+
 -- Update the skeleton in the main loop
 function Skeleton:Update()
     if self.Removed then
@@ -162,47 +168,43 @@ function Skeleton:Update()
         local part0 = link.Part0
         local part1 = link.Part1
 
-        if self.DoSubsteps and link.C0 and link.C1 then
-            local c0 = link.C0
-            local c1 = link.C1
+        local isPart0Visible = self:IsVisible(part0)
+        local isPart1Visible = self:IsVisible(part1)
 
-            local part0p, v1 = To2D(Camera, part0.CFrame.p)
-            local part0cp, v2 = To2D(Camera, (part0.CFrame * c0).p)
-
-            if v1 and v2 then
-                l[1].From = V2(part0p.x, part0p.y)
-                l[1].To = V2(part0cp.x, part0cp.y)
-
+        -- If part is visible and it's a teammate, color it blue
+        if self.Player.Team == LocalPlayer.Team then
+            if isPart0Visible then
+                l[1].Color = Color3.fromRGB(0, 0, 255) -- Blue for teammates
                 l[1].Visible = true
             else
-                l[1].Visible = false
+                l[1].Color = Color3.fromRGB(255, 0, 0) -- Red for teammates if not visible
+                l[1].Visible = true
             end
 
-            local part1p, v3 = To2D(Camera, part1.CFrame.p)
-            local part1cp, v4 = To2D(Camera, (part1.CFrame * c1).p)
-
-            if v3 and v4 then
-                l[2].From = V2(part1p.x, part1p.y)
-                l[2].To = V2(part1cp.x, part1cp.y)
-
+            if isPart1Visible then
+                l[2].Color = Color3.fromRGB(0, 0, 255) -- Blue for teammates
                 l[2].Visible = true
             else
-                l[2].Visible = false
+                l[2].Color = Color3.fromRGB(255, 0, 0) -- Red for teammates if not visible
+                l[2].Visible = true
             end
         else
-            local part0p, v1 = To2D(Camera, part0.CFrame.p)
-            local part1p, v2 = To2D(Camera, part1.CFrame.p)
-
-            if v1 and v2 then
-                l[1].From = V2(part0p.x, part0p.y)
-                l[1].To = V2(part1p.x, part1p.y)
-
+            -- If part is visible and it's an enemy, color it green
+            if isPart0Visible then
+                l[1].Color = Color3.fromRGB(0, 255, 0) -- Green for enemies
                 l[1].Visible = true
             else
-                l[1].Visible = false
+                l[1].Color = Color3.fromRGB(255, 0, 0) -- Red for enemies if not visible
+                l[1].Visible = true
             end
 
-            l[2].Visible = false
+            if isPart1Visible then
+                l[2].Color = Color3.fromRGB(0, 255, 0) -- Green for enemies
+                l[2].Visible = true
+            else
+                l[2].Color = Color3.fromRGB(255, 0, 0) -- Red for enemies if not visible
+                l[2].Visible = true
+            end
         end
     end
 
@@ -281,32 +283,5 @@ function Library:NewSkeleton(Player, Visible, Color, Alpha, Thickness, DoSubstep
     return s
 end
 
--- LIBRARY FORMAT
-if true then
-    return Library
-end
-
--- TEST CODE
-if false then
-    -- Initialize Skeletons
-    local Skeletons = {}
-    for _, Player in next, game.Players:GetChildren() do
-        if Player ~= LocalPlayer then
-            table.insert(Skeletons, Library:NewSkeleton(Player, true))
-        end
-    end
-
-    -- Player Added event
-    game.Players.PlayerAdded:Connect(function(Player)
-        table.insert(Skeletons, Library:NewSkeleton(Player, true))
-    end)
-
-    -- Update Skeletons
-    while true do
-        for _, skeleton in next, Skeletons do
-            skeleton:SetColor(Color3.fromRGB(skeleton.Player.TeamColor == LocalPlayer.TeamColor and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(255, 0, 0)))
-            skeleton:SetThickness(4)
-        end
-        WAIT(0.001)  -- Refresh every 1ms
-    end
-end
+-- Returning the Library to make it usable
+return Library
