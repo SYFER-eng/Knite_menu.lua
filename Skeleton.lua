@@ -1,5 +1,6 @@
 local WAIT = task.wait
 local TBINSERT = table.insert
+local TBFIND = table.find
 local TBREMOVE = table.remove
 local V2 = Vector2.new
 local ROUND = math.round
@@ -9,304 +10,274 @@ local Camera = workspace.CurrentCamera
 local To2D = Camera.WorldToViewportPoint
 local LocalPlayer = game.Players.LocalPlayer
 
-local Library = {};
-Library.__index = Library;
+-- Skeleton Library
+local Library = {}
+Library.__index = Library
 
--- Create a line with specific parameters
+-- Functions
 function Library:NewLine(info)
-    local l = Drawing.new("Line")
-    l.Visible = info.Visible or true
-    l.Color = info.Color or Color3.fromRGB(0, 255, 0)
-    l.Transparency = info.Transparency or 1
-    l.Thickness = info.Thickness or 1
-    return l
+	local l = Drawing.new("Line")
+	l.Visible = info.Visible or true
+	l.Color = info.Color or Color3.fromRGB(0, 255, 0)
+	l.Transparency = info.Transparency or 1
+	l.Thickness = info.Thickness or 1
+	return l
 end
 
--- Smoothen a vector
 function Library:Smoothen(v)
-    return V2(ROUND(v.X), ROUND(v.Y))
+	return V2(ROUND(v.X), ROUND(v.Y))
 end
 
--- Skeleton Object (holds the structure)
+-- Skeleton Object
 local Skeleton = {
-    Removed = false,
-    Player = nil,
-    Visible = false,
-    Lines = {},
-    Color = Color3.fromRGB(0, 255, 0),
-    Alpha = 1,
-    Thickness = 1,
-    DoSubsteps = true
+	Removed = false,
+	Player = nil,
+	Visible = false,
+	Lines = {},
+	Color = Color3.fromRGB(0, 255, 0),
+	Alpha = 1,
+	Thickness = 1,
+	DoSubsteps = true,
 }
 Skeleton.__index = Skeleton
 
--- Update the skeleton structure (lines, joints, etc.)
+-- Update the skeleton structure (create lines for body parts)
 function Skeleton:UpdateStructure()
-    if not self.Player.Character then return end
+	if not self.Player.Character then return end
+	
+	self:RemoveLines()
 
-    self:RemoveLines()
+	for _, part in next, self.Player.Character:GetChildren() do
+		if not part:IsA("BasePart") then
+			continue
+		end
 
-    for _, part in next, self.Player.Character:GetChildren() do
-        if not part:IsA("BasePart") then
-            continue
-        end
-
-        for _, link in next, part:GetChildren() do
-            if not link:IsA("Motor6D") then
-                continue
-            end
-
-            TBINSERT(self.Lines, {
-                Library:NewLine({
-                    Visible = self.Visible,
-                    Color = self.Color,
-                    Transparency = self.Alpha,
-                    Thickness = self.Thickness
-                }),
-                Library:NewLine({
-                    Visible = self.Visible,
-                    Color = self.Color,
-                    Transparency = self.Alpha,
-                    Thickness = self.Thickness
-                }),
-                part.Name,
-                link.Name
-            })
-        end
-    end
+		for _, link in next, part:GetChildren() do
+			if not link:IsA("Motor6D") then
+				continue
+			end
+			
+			-- Add lines for each joint
+			TBINSERT(self.Lines, {
+				self:NewLine({
+					Visible = self.Visible,
+					Color = self.Color,
+					Transparency = self.Alpha,
+					Thickness = self.Thickness,
+				}),
+				self:NewLine({
+					Visible = self.Visible,
+					Color = self.Color,
+					Transparency = self.Alpha,
+					Thickness = self.Thickness,
+				}),
+				part.Name,
+				link.Name
+			})
+		end
+	end
 end
 
--- Set visibility for all lines in the skeleton
+-- Toggle visibility of the skeleton
 function Skeleton:SetVisible(State)
-    for _, l in pairs(self.Lines) do
-        l[1].Visible = State
-        l[2].Visible = State
-    end
+	for _, l in pairs(self.Lines) do
+		l[1].Visible = State
+		l[2].Visible = State
+	end
 end
 
--- Set the color for all lines in the skeleton
+-- Set skeleton color
 function Skeleton:SetColor(Color)
-    self.Color = Color
-    for _, l in pairs(self.Lines) do
-        l[1].Color = Color
-        l[2].Color = Color
-    end
+	self.Color = Color
+	for _, l in pairs(self.Lines) do
+		l[1].Color = Color
+		l[2].Color = Color
+	end
 end
 
--- Set the transparency for all lines in the skeleton
+-- Set skeleton transparency (alpha)
 function Skeleton:SetAlpha(Alpha)
-    self.Alpha = Alpha
-    for _, l in pairs(self.Lines) do
-        l[1].Transparency = Alpha
-        l[2].Transparency = Alpha
-    end
+	self.Alpha = Alpha
+	for _, l in pairs(self.Lines) do
+		l[1].Transparency = Alpha
+		l[2].Transparency = Alpha
+	end
 end
 
--- Set the thickness for all lines in the skeleton
+-- Set line thickness
 function Skeleton:SetThickness(Thickness)
-    self.Thickness = Thickness
-    for _, l in pairs(self.Lines) do
-        l[1].Thickness = Thickness
-        l[2].Thickness = Thickness
-    end
+	self.Thickness = Thickness
+	for _, l in pairs(self.Lines) do
+		l[1].Thickness = Thickness
+		l[2].Thickness = Thickness
+	end
 end
 
--- Set whether substeps should be drawn
+-- Enable/Disable substeps
 function Skeleton:SetDoSubsteps(State)
-    self.DoSubsteps = State
+	self.DoSubsteps = State
 end
 
--- Update the skeleton in the main loop
+-- Update the skeleton (draw the lines)
 function Skeleton:Update()
-    if self.Removed then
-        return
-    end
+	if self.Removed then
+		return
+	end
 
-    local Character = self.Player.Character
-    if not Character then
-        self:SetVisible(false)
-        if not self.Player.Parent then
-            self:Remove()
-        end
-        return
-    end
+	local Character = self.Player.Character
+	if not Character then
+		self:SetVisible(false)
+		if not self.Player.Parent then
+			self:Remove()
+		end
+		return
+	end
 
-    local Humanoid = Character:FindFirstChildOfClass("Humanoid")
-    if not Humanoid then
-        self:SetVisible(false)
-        return
-    end
+	local Humanoid = Character:FindFirstChildOfClass("Humanoid")
+	if not Humanoid then
+		self:SetVisible(false)
+		return
+	end
 
-    self:SetColor(self.Color)
-    self:SetAlpha(self.Alpha)
-    self:SetThickness(self.Thickness)
+	self:SetColor(self.Color)
+	self:SetAlpha(self.Alpha)
+	self:SetThickness(self.Thickness)
 
-    local update = false
-    for _, l in pairs(self.Lines) do
-        local part = Character:FindFirstChild(l[3])
-        if not part then
-            l[1].Visible = false
-            l[2].Visible = false
-            update = true
-            continue
-        end
+	local update = false
+	for _, l in pairs(self.Lines) do
+		local part = Character:FindFirstChild(l[3])
+		if not part then
+			l[1].Visible = false
+			l[2].Visible = false
+			update = true
+			continue
+		end
 
-        local link = part:FindFirstChild(l[4])
-        if not (link and link.part0 and link.part1) then
-            l[1].Visible = false
-            l[2].Visible = false
-            update = true
-            continue
-        end
+		local link = part:FindFirstChild(l[4])
+		if not (link and link.part0 and link.part1) then
+			l[1].Visible = false
+			l[2].Visible = false
+			update = true
+			continue
+		end
 
-        local part0 = link.Part0
-        local part1 = link.Part1
+		local part0 = link.Part0
+		local part1 = link.Part1
+		
+		-- Draw substeps if enabled
+		if self.DoSubsteps and link.C0 and link.C1 then
+			local c0 = link.C0
+			local c1 = link.C1
 
-        if self.DoSubsteps and link.C0 and link.C1 then
-            local c0 = link.C0
-            local c1 = link.C1
+			local part0p, v1 = To2D(Camera, part0.CFrame.p)
+			local part0cp, v2 = To2D(Camera, (part0.CFrame * c0).p)
 
-            local part0p, v1 = To2D(Camera, part0.CFrame.p)
-            local part0cp, v2 = To2D(Camera, (part0.CFrame * c0).p)
+			if v1 and v2 then
+				l[1].From = V2(part0p.x, part0p.y)
+				l[1].To = V2(part0cp.x, part0cp.y)
+				l[1].Visible = true
+			else 
+				l[1].Visible = false
+			end
 
-            if v1 and v2 then
-                l[1].From = V2(part0p.x, part0p.y)
-                l[1].To = V2(part0cp.x, part0cp.y)
+			local part1p, v3 = To2D(Camera, part1.CFrame.p)
+			local part1cp, v4 = To2D(Camera, (part1.CFrame * c1).p)
 
-                l[1].Visible = true
-            else
-                l[1].Visible = false
-            end
+			if v3 and v4 then
+				l[2].From = V2(part1p.x, part1p.y)
+				l[2].To = V2(part1cp.x, part1cp.y)
+				l[2].Visible = true
+			else 
+				l[2].Visible = false
+			end
+		else					
+			local part0p, v1 = To2D(Camera, part0.CFrame.p)
+			local part1p, v2 = To2D(Camera, part1.CFrame.p)
 
-            local part1p, v3 = To2D(Camera, part1.CFrame.p)
-            local part1cp, v4 = To2D(Camera, (part1.CFrame * c1).p)
+			if v1 and v2 then
+				l[1].From = V2(part0p.x, part0p.y)
+				l[1].To = V2(part1p.x, part1p.y)
+				l[1].Visible = true
+			else 
+				l[1].Visible = false
+			end
 
-            if v3 and v4 then
-                l[2].From = V2(part1p.x, part1p.y)
-                l[2].To = V2(part1cp.x, part1cp.y)
+			l[2].Visible = false
+		end
+	end
 
-                l[2].Visible = true
-            else
-                l[2].Visible = false
-            end
-        else
-            local part0p, v1 = To2D(Camera, part0.CFrame.p)
-            local part1p, v2 = To2D(Camera, part1.CFrame.p)
-
-            if v1 and v2 then
-                l[1].From = V2(part0p.x, part0p.y)
-                l[1].To = V2(part1p.x, part1p.y)
-
-                l[1].Visible = true
-            else
-                l[1].Visible = false
-            end
-
-            l[2].Visible = false
-        end
-    end
-
-    if update or #self.Lines == 0 then
-        self:UpdateStructure()
-    end
+	if update or #self.Lines == 0 then
+		self:UpdateStructure()
+	end
 end
 
--- Toggle the visibility of the skeleton
+-- Toggle the skeleton visibility and start the update loop
 function Skeleton:Toggle()
-    self.Visible = not self.Visible
+	self.Visible = not self.Visible
 
-    if self.Visible then
-        self:RemoveLines()
-        self:UpdateStructure()
-
-        local c
-        c = RS.Heartbeat:Connect(function()
-            if not self.Visible then
-                self:SetVisible(false)
-                c:Disconnect()
-                return
-            end
-
-            self:Update()
-        end)
-    end
+	if self.Visible then 
+		self:RemoveLines()
+		self:UpdateStructure()
+		
+		local c;c = RS.Heartbeat:Connect(function()
+			if not self.Visible then
+				self:SetVisible(false)
+				c:Disconnect()
+				return
+			end
+			self:Update()
+		end)
+	end
 end
 
--- Remove all lines from the skeleton
+-- Remove all lines (cleanup)
 function Skeleton:RemoveLines()
-    for _, l in pairs(self.Lines) do
-        l[1]:Remove()
-        l[2]:Remove()
-    end
-    self.Lines = {}
+	for _, l in pairs(self.Lines) do
+		l[1]:Remove()
+		l[2]:Remove()
+	end
+	self.Lines = {}
 end
 
--- Remove the skeleton entirely
+-- Remove the skeleton completely
 function Skeleton:Remove()
-    self.Removed = true
-    self:RemoveLines()
+	self.Removed = true
+	self:RemoveLines()
 end
 
--- Create a new Skeleton for a player
+-- Create a new skeleton
 function Library:NewSkeleton(Player, Visible, Color, Alpha, Thickness, DoSubsteps)
-    if not Player then
-        error("Missing Player argument (#1)")
-    end
+	if not Player then
+		error("Missing Player argument (#1)")
+	end
+	
+	local s = setmetatable({}, Skeleton)
 
-    local s = setmetatable({}, Skeleton)
+	s.Player = Player
+	s.Bind = Player.UserId
+	
+	if DoSubsteps ~= nil then
+		s.DoSubsteps = DoSubsteps
+	end
+	
+	if Color then
+		s:SetColor(Color)
+	end
+	
+	if Alpha then
+		s:SetAlpha(Alpha)
+	end
+	
+	if Thickness then
+		s:SetThickness(Thickness)
+	end
 
-    s.Player = Player
-    s.Bind = Player.UserId
+	if Visible then
+		s:Toggle()
+	end
 
-    if DoSubsteps ~= nil then
-        s.DoSubsteps = DoSubsteps
-    end
-
-    if Color then
-        s:SetColor(Color)
-    end
-
-    if Alpha then
-        s:SetAlpha(Alpha)
-    end
-
-    if Thickness then
-        s:SetThickness(Thickness)
-    end
-
-    if Visible then
-        s:Toggle()
-    end
-
-    return s
+	return s
 end
 
--- LIBRARY FORMAT
-if true then
-    return Library
-end
-
--- TEST CODE
-if false then
-    -- Initialize Skeletons
-    local Skeletons = {}
-    for _, Player in next, game.Players:GetChildren() do
-        if Player ~= LocalPlayer then
-            table.insert(Skeletons, Library:NewSkeleton(Player, true))
-        end
-    end
-
-    -- Player Added event
-    game.Players.PlayerAdded:Connect(function(Player)
-        table.insert(Skeletons, Library:NewSkeleton(Player, true))
-    end)
-
-    -- Update Skeletons
-    while true do
-        for _, skeleton in next, Skeletons do
-            skeleton:SetColor(Color3.fromRGB(skeleton.Player.TeamColor == LocalPlayer.TeamColor and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(255, 0, 0)))
-            skeleton:SetThickness(4)
-        end
-        WAIT(0.001)  -- Refresh every 1ms
-    end
-end
+-- Returning the Library for use
+return Library
