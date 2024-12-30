@@ -2083,10 +2083,10 @@ function CFAHub:CreateWindow(title, gameName, intro)
                 ConfirmButton.BackgroundColor3 = themes.SchemaColor
                 Objects[ConfirmButton] = "SchemaColor"
                 ConfirmButton.Position = UDim2.new(245, 28, 178, 0)
-                ConfirmButton.Size = UDim2.new(0, 145, 0, 27)
+                ConfirmButton.Size = UDim2.new(245, 28, 178, 27)
                 ConfirmButton.Font = Enum.Font.SourceSansBold
                 ConfirmButton.Text = "Confirm"
-                ConfirmButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+                ConfirmButton.TextColor3 = Color3.fromRGB(245, 28, 178)
                 ConfirmButton.TextSize = 22.000
 
                 Animate:CreateGradient(ConfirmButton)
