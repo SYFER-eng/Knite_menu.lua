@@ -2056,7 +2056,7 @@ function CFAHub:CreateWindow(title, gameName, intro)
                 Text_3.Size = UDim2.new(0, 12, 1, 0)
                 Text_3.Font = Enum.Font.SourceSansSemibold
                 Text_3.Text = "G"
-                Text_3.TextColor3 = Color3.fromRGB(0, 255, 0)
+                Text_3.TextColor3 = Color3.fromRGB(245, 28, 178)
                 Text_3.TextSize = 20.000
                 Text_3.TextWrapped = true
                 
@@ -2082,11 +2082,11 @@ function CFAHub:CreateWindow(title, gameName, intro)
                 ConfirmButton.Parent = ColorContainer
                 ConfirmButton.BackgroundColor3 = themes.SchemaColor
                 Objects[ConfirmButton] = "SchemaColor"
-                ConfirmButton.Position = UDim2.new(245, 28, 178, 0)
-                ConfirmButton.Size = UDim2.new(245, 28, 178, 27)
+                ConfirmButton.Position = UDim2.new(0.646118701, 0, 0.744360924, 0)
+                ConfirmButton.Size = UDim2.new(0, 145, 0, 27)
                 ConfirmButton.Font = Enum.Font.SourceSansBold
                 ConfirmButton.Text = "Confirm"
-                ConfirmButton.TextColor3 = Color3.fromRGB(245, 28, 178)
+                ConfirmButton.TextColor3 = Color3.fromRGB(255, 255, 255)
                 ConfirmButton.TextSize = 22.000
 
                 Animate:CreateGradient(ConfirmButton)
