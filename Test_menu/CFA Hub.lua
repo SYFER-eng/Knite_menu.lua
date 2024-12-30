@@ -2069,8 +2069,8 @@ function CFAHub:CreateWindow(title, gameName, intro)
                 TextBox_3.Parent = G
                 TextBox_3.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
                 TextBox_3.BackgroundTransparency = 1.000
-                TextBox_3.Position = UDim2.new(245, 28, 178)
-                TextBox_3.Size = UDim2.new(245, 28, 178)
+                TextBox_3.Position = UDim2.new(0.304347813, 0, 0, 0)
+                TextBox_3.Size = UDim2.new(0, 32, 0, 30)
                 TextBox_3.Font = Enum.Font.SourceSansSemibold
                 TextBox_3.Text = g
                 TextBox_3.TextColor3 = themes.TextColor
@@ -2082,7 +2082,7 @@ function CFAHub:CreateWindow(title, gameName, intro)
                 ConfirmButton.Parent = ColorContainer
                 ConfirmButton.BackgroundColor3 = themes.SchemaColor
                 Objects[ConfirmButton] = "SchemaColor"
-                ConfirmButton.Position = UDim2.new(0.646118701, 0, 0.744360924, 0)
+                ConfirmButton.Position = UDim2.new(245, 28, 178, 0)
                 ConfirmButton.Size = UDim2.new(0, 145, 0, 27)
                 ConfirmButton.Font = Enum.Font.SourceSansBold
                 ConfirmButton.Text = "Confirm"
