@@ -283,5 +283,30 @@ function Library:NewSkeleton(Player, Visible, Color, Alpha, Thickness, DoSubstep
     return s
 end
 
--- Returning the Library to make it usable
+-- MAIN TEST SCRIPT (For example, auto-creating skeletons for all players)
+if false then
+    local Skeletons = {}
+    for _, Player in next, game.Players:GetChildren() do
+        if Player ~= LocalPlayer then
+            table.insert(Skeletons, Library:NewSkeleton(Player, true))
+        end
+    end
+
+    game.Players.PlayerAdded:Connect(function(Player)
+        table.insert(Skeletons, Library:NewSkeleton(Player, true))
+    end)
+
+    -- Update Skeletons based on team and visibility
+    while true do
+        for _, skeleton in next, Skeletons do
+            local color = (skeleton.Player.Team == LocalPlayer.Team) and Color3.fromRGB(0, 0, 255) or Color3.fromRGB(0, 255, 0)
+            skeleton:SetColor(color)
+            skeleton:SetThickness(4)
+        end
+
+        task.wait(0.001)  -- Update every 1 ms
+    end
+end
+
+-- Return the Library so it can be used externally
 return Library
