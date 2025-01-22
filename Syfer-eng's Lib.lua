@@ -1,7 +1,7 @@
--- ButtonLib Module (with cool effects)
+-- ButtonLib Module
 local ButtonLib = {}
 
--- Function to create a button with more modern effects
+-- Function to create a button with animations and effects
 function ButtonLib.createButton(parent, position, size, buttonText, callback)
     -- Create the button
     local button = Instance.new("TextButton")
