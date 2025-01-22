@@ -1,4 +1,4 @@
--- ButtonLib Module (Cooler Design)
+-- ButtonLib Module (with cool effects)
 local ButtonLib = {}
 
 -- Function to create a button with more modern effects
