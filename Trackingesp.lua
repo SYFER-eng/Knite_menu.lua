@@ -287,7 +287,6 @@ local function UnloadESP()
     AllDrawings = {}
     PlayerESP = {}
     
-    print("ESP Unloaded Successfully")
 end
 
 -- Set up End key to unload ESP
@@ -324,5 +323,3 @@ end)
 table.insert(Connections, playerAddedConnection)
 table.insert(Connections, playerRemovingConnection)
 table.insert(Connections, updateConnection)
-
-print("ESP Loaded Successfully - Press END to unload")
